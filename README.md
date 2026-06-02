@@ -1,4 +1,4 @@
-# Vulnerable-Transit-API
+# Vulnerable Transit API
 A deliberately vulnerable transportation booking API in C.
 
 ## Purpose
