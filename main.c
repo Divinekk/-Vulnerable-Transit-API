@@ -27,6 +27,9 @@ if ( strcmp(url, "/health") == 0 ) {
 else if ( strcmp(url, "/trips") == 0 ) {
     page = "<html><body><h1>Trips Dashboard</h1></body></html>";
 }
+else if (strcmp(url, "/users") == 0) {
+    page = "<html><body><h1>Users</h1></body></html>";
+}
 else {
     page = "<html><body><h1>404 - Route Not Found</h1></body></html>";
 }
