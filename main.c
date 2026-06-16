@@ -1,4 +1,5 @@
 
+
 #include <sys/types.h>
 #include <sys/select.h>
 #include <sys/socket.h>
@@ -28,12 +29,23 @@ else if ( strcmp(url, "/trips") == 0 ) {
     page = "<html><body><h1>Trips Dashboard</h1></body></html>";
 }
 else if (strcmp(url, "/users") == 0) {
-    page = "<html><body><h1>Users</h1></body></html>";
+    if(strcmp(method, "GET") == 0) {
+     page = "<html><body><h1>Register</h1><form method='POST'><input type='submit' value='Click to Submit'/></form></body></html>";
+
+}
+else if (strcmp(method, "POST") == 0) {
+      if (*upload_datasize == 0) {
+	return MHD_YES;
+
 }
 else {
-    page = "<html><body><h1>404 - Route Not Found</h1></body></html>";
+	printf("Captured data stream");
+	*upload_datasize = 0;
+	page = "<html><body><h1>Registration Submitted</h1></body></html>";
+      }
+    
+    }
 }
-
 
 struct MHD_Response *response;
 int ret;
