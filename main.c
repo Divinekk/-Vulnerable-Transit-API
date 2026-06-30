@@ -72,8 +72,35 @@ else if ( strcmp(url, "/trips") == 0 ) {
 }
 else if (strcmp(url, "/users") == 0) {
     if(strcmp(method, "GET") == 0) {
-     page = "<html><body><h1>Register</h1><form method='POST'>Username: <input type='text' name='username'><br>Password: <input type='password' name='password'><br><input type='submit' value='Click to Submit'/></form></body></html>";
-    }
+     page = "<html>"
+       "<body style='background-color: #0f172a; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;'>"
+       "  <div style='background-color: #1e293b; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); width: 350px; text-align: center;'>"
+       "    <h2 style='color: #22d3ee; margin-bottom: 25px;'>Vulnerable Transit </h2>"
+       "    <form method='POST' onsubmit='return validateForm()'>"
+       "      <div style='text-align: left; margin-bottom: 15px;'>"
+       "        <label style='display: block; font-size: 14px; margin-bottom: 5px; color: #94a3b8;'>Username</label>"
+       "        <input type='text' name='username' id='uname' style='width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #475569; background-color: #0f172a; color: white; outline: none; box-sizing: border-box;'>"
+       "      </div>"
+       "      <div style='text-align: left; margin-bottom: 25px;'>"
+       "        <label style='display: block; font-size: 14px; margin-bottom: 5px; color: #94a3b8;'>Password</label>"
+       "        <input type='password' name='password' id='upass' style='width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #475569; background-color: #0f172a; color: white; outline: none; box-sizing: border-box;'>"
+       "      </div>"
+       "      <input type='submit' value='Register Account' style='width: 100%; padding: 12px; background: linear-gradient(to right, #06b6d4, #2563eb); border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; font-size: 16px;'>"
+       "    </form>"
+       "  </div>"
+       "  <script>"
+       "    function validateForm() {"
+       "      var name = document.getElementById('uname').value;"
+       "      var pass = document.getElementById('upass').value;"
+       "      if (name == '' || pass == '') {"
+       "        alert('Omo! You cannot leave fields blank!');"
+       "        return false;"
+       "      }"
+       "      return true;"
+       "    }"
+       "  </script>"
+       "</body></html>";
+}
     else if (strcmp(method, "POST") == 0) {
       if (*req_cls == NULL) {
         static int marker = 1;
