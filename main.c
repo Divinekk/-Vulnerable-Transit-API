@@ -1,3 +1,4 @@
+
 #include <sys/types.h>
 #include <sys/select.h>
 #include <sys/socket.h>
@@ -79,16 +80,44 @@ else if (strcmp(url, "/users") == 0) {
         *req_cls = &marker;
         return MHD_YES;
       }
-      if (*upload_datasize == 0) {
-        page = "<html><body><h1>Registration Submitted</h1></body></html>";
-      }
-      else {
-        printf("Captured data stream");
-        register_new_user(upload_data);
-        *upload_datasize = 0;
-        return MHD_YES;
-      }
+
+      if (*upload_datasize > 0) {
+	char extracted_name[50] = {0};
+        char extracted_pass[50] = {0};
+	 sscanf(upload_data, "username=%[^&]&password=%s", extracted_name, extracted_pass);
+
+ int match_found = 0;
+
+ for (int i = 0; i < user_count; i++) {
+            
+            if (strcmp(user_database[i].username, extracted_name) == 0 &&
+                strcmp(user_database[i].password, extracted_pass) == 0) {
+                
+                match_found = 1; 
+                break;           
+            }
+        }
+
+ if (match_found == 1) {
+            printf("Login Success for user: %s\n", extracted_name);
+            
+} else {
+            printf("Login Failed for user: %s\n", extracted_name);
+        }
+
+    
+
+   
+        *upload_datasize = 0; 
+        return MHD_YES; 
     }
+
+        if (*upload_datasize == 0) {
+            page = "<html><body><h1>Login Processing Complete!</h1></body></html>";
+        }
+}
+
+
 }
 
 struct MHD_Response *response;
