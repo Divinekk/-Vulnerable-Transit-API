@@ -5,7 +5,9 @@
 #include <microhttpd.h>
 #include <stdio.h>
 #include <string.h>
+#include <sqlite3.h>
 
+sqlite3 *db;
 
 #define PORT 8888
 
@@ -157,20 +159,59 @@ return ret;
 
 }
 
+
+void db_init() {
+    char *err_msg = NULL;
+
+   
+    int rc = sqlite3_open("vulnerabletransit.db", &db);
+    if (rc != SQLITE_OK) {
+        printf("Database open failed: %s\n", sqlite3_errmsg(db));
+        return; 
+    }
+
+    
+    sqlite3_exec(db, 
+        "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT, password TEXT);",
+        NULL, NULL, &err_msg);
+
+    sqlite3_exec(db, 
+        "CREATE TABLE IF NOT EXISTS trips (id INTEGER PRIMARY KEY, destination TEXT, price INTEGER);",
+        NULL, NULL, &err_msg);
+
+sqlite3_exec(db, 
+        "CREATE TABLE IF NOT EXISTS bookings (id INTEGER PRIMARY KEY, user_id INTEGER, trip_id INTEGER);",
+        NULL, NULL, &err_msg);
+
+    if (rc != SQLITE_OK && err_msg != NULL) {
+        printf("SQL Table Creation Error: %s\n", err_msg);
+        sqlite3_free(err_msg); 
+    }
+}
+
 int main ()
 {
     struct MHD_Daemon *daemon;
+     db_init();
 
+    
     daemon = MHD_start_daemon (MHD_USE_INTERNAL_POLLING_THREAD, PORT, NULL, NULL,
                                &answer_to_connection, NULL, MHD_OPTION_END);
 
-    if (NULL == daemon) return 1;
+    if (NULL == daemon) {
+	sqlite3_close(db);		 
+return 1;
+}
 
-    printf("Server is running on http://localhost:8888/ \n");
+  printf("Server is running on http://localhost:8888/ \n");
     printf("Press ENTER to stop the server...\n");
 
     getchar ();
 
     MHD_stop_daemon (daemon);
+    sqlite3_close(db);
     return 0;
 }
+
+
+
