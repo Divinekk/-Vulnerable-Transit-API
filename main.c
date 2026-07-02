@@ -114,41 +114,33 @@ else if (strcmp(url, "/users") == 0) {
 	char extracted_name[50] = {0};
         char extracted_pass[50] = {0};
 	 sscanf(upload_data, "username=%[^&]&password=%s", extracted_name, extracted_pass);
+}
+ 
+char query[256] = {0};
 
- int match_found = 0;
+ sprintf(query, "INSERT INTO users (username, password) VALUES ('%s', '%s');", extracted_name, extracted_pass);
 
- for (int i = 0; i < user_count; i++) {
-            
-            if (strcmp(user_database[i].username, extracted_name) == 0 &&
-                strcmp(user_database[i].password, extracted_pass) == 0) {
-                
-                match_found = 1; 
-                break;           
-            }
+char *err_msg = NULL;
+        sqlite3_exec(db, query, NULL, NULL, &err_msg);
+
+
+  if (err_msg != NULL) {
+            printf("SQL Insertion Error: %s\n", err_msg);
+            sqlite3_free(err_msg); 
+        } else {
+            printf("Successfully REGISTERED user row inside SQLite database file!\n");
         }
 
- if (match_found == 1) {
-            printf("Login Success for user: %s\n", extracted_name);
-            
-} else {
-            printf("Login Failed for user: %s\n", extracted_name);
-        }
+   *upload_datasize = 0;
+        return MHD_YES;
+      }
 
-    
-
-   
-        *upload_datasize = 0; 
-        return MHD_YES; 
+ if (*upload_datasize == 0) {
+        page = "<html><body><h1>Registration Completed Successfully!</h1></body></html>";
+      }
     }
 
-        if (*upload_datasize == 0) {
-            page = "<html><body><h1>Login Processing Complete!</h1></body></html>";
-        }
 }
-
-
-}
-
 struct MHD_Response *response;
 int ret;
 response = MHD_create_response_from_buffer (strlen (page), (
